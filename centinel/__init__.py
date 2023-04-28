@@ -9,4 +9,4 @@ app.config['SQLALCHEMY_DATABASE_URI'] = config.DATABASE_URI
 
 
 auth = HTTPBasicAuth()
-db = SQLAlchemy(app);
+db = SQLAlchemy(app)
