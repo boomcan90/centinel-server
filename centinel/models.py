@@ -38,6 +38,9 @@ class Client(db.Model):
     roles = db.relationship('Role', secondary=roles_tab,
                             backref=db.backref('users', lazy='dynamic'))
 
+    def __get_role(role):
+        return Role.query.filter_by(name=role).first()
+
     def __init__(self, **kwargs):
         """Create a client object"""
 
@@ -65,8 +68,7 @@ class Client(db.Model):
         if 'password' in kwargs:
             self.password_hash = pwd_context.encrypt(kwargs['password'])
         if 'roles' in kwargs:
-            get_role = lambda role: Role.query.filter_by(name=role).first()
-            self.roles = [get_role(role) for role in kwargs['roles']]
+            self.roles = [self.__get_role(role) for role in kwargs['roles']]
         if 'ip' in kwargs:
             ip = kwargs['ip']
             # if there is a space between the ip and the netmask,
