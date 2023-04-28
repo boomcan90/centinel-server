@@ -43,7 +43,9 @@ def parse_args():
 
     digest_help = ('Enable HTTP digest authentication. If username and password '
                    'are provided, basic authentication is used as default.')
-    parser.add_argument('--digest', '-d', help=digest_help, dest='digest', action='store_true')
+    parser.add_argument('--digest', '-d', help=digest_help, 
+                   dest='digest', action='store_true')
+
     parser.set_defaults(digest=False)
 
     args = parser.parse_args()
@@ -52,8 +54,8 @@ def parse_args():
         parser.error(f"The output directory \"{args.output}\" does not exist!")
 
     if args.user is None and args.digest is False:
-        parser.error('Digest authentication has been enabled but no username and password '
-                     'given.')
+        parser.error('Digest authentication has been enabled but no '
+                     'username and password given.')
     return args
 
 
