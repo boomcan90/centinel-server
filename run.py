@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 
 if (2, 7, 9) > sys.version_info:
-    print ("WARNING: Python is older than 2.7.9, "
+    print("WARNING: Python is older than 2.7.9, "
            "using older SSL version. This is "
            "incompatible with Werkzeug 0.10.x and "
            "will break if you use Werkzeug >= 0.10.0")
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # create the centinel directory if it doesn't exist
     if not os.path.exists(config.centinel_home):
         os.makedirs(config.centinel_home)
-        print "Created centinel home directory at {}".format(config.centinel_home)
+        print(f"Created centinel home directory at {config.centinel_home}")
 
     db = centinel.db
     app = centinel.app
@@ -44,19 +44,21 @@ if __name__ == "__main__":
     logger.addHandler(log_handler)
     app.logger.addHandler(log_handler)
 
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
-    Role = centinel.models.Role
+        Role = centinel.models.Role
 
-    admin_role = db.session.query(Role).filter(Role.name == 'admin').all()
-    if len(admin_role) == 0:
-        db.session.add(Role('admin'))
+        admin_role = db.session.query(Role).filter(Role.name == 'admin').all()
+        if len(admin_role) == 0:
+            db.session.add(Role('admin'))
 
-    client_role = db.session.query(Role).filter(Role.name == 'client').all()
-    if len(client_role) == 0:
-        db.session.add(Role('client'))
+        client_role = db.session.query(Role).filter(Role.name == 'client').all()
+        if len(client_role) == 0:
+            db.session.add(Role('client'))
 
-    db.session.commit()
+        db.session.commit()
+    
     if args.adhoc:
         context = 'adhoc'
     else:
