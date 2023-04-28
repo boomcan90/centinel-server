@@ -3,3 +3,9 @@
 *.key
 *.crt
 /.idea
+
+.ruff_cache/
+*.pyc
+__pycache__/
+venv/
+testfile
