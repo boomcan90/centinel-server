@@ -98,7 +98,7 @@ def copy_data(clients, data):
 
     """
     if not os.path.exists(data):
-        print "Error: invalid data file to copy from"
+        print("Error: invalid data file to copy from")
         return
     with open(data, 'r') as file_p:
         content = file_p.read()
@@ -106,7 +106,7 @@ def copy_data(clients, data):
     for client in clients:
         client_data_dir = os.path.join(config.inputs_dir, client)
         if not os.path.exists(client_data_dir):
-            print ("Error: client data directory does not exist! "
+            print("Error: client data directory does not exist! "
                          "%s" % (client_data_dir))
             continue
 
@@ -139,7 +139,7 @@ def copy_exps(clients, exp):
 
     """
     if not os.path.exists(exp):
-        print "Error: invalid experiment to copy from"
+        print("Error: invalid experiment to copy from")
         return
     with open(exp, 'r') as file_p:
         content = file_p.read()
@@ -147,8 +147,8 @@ def copy_exps(clients, exp):
     for client in clients:
         client_experiments_dir = os.path.join(config.experiments_dir, client)
         if not os.path.exists(client_experiments_dir):
-            print ("Error: client experiments directory does not exist! "
-                         "%s" % (client_data_dir))
+            print(f"Error: client experiments directory does not exist! "
+                    f"{client_experiments_dir}")
             continue
 
         filename = os.path.join(client_experiments_dir, basename)
@@ -242,11 +242,11 @@ if __name__ == "__main__":
 
     # print the clients and return if we are not copying any files over
     if args.experiment is None and args.data is None:
-        print ("You have not specified a data file or experiment to run on "
+        print("You have not specified a data file or experiment to run on "
                "the clients, so I will just print the clients usernames that "
                "you would have scheduled experiments on")
         for client in clients:
-            print "{0}".format(client)
+            print(f"{client}")
         sys.exit(0)
 
     # copy the data files if necessary
