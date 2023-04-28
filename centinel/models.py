@@ -48,7 +48,7 @@ class Client(db.Model):
         # custom functionality. Also do type checking on the variable
         # type
 
-        dont_display = False
+        dont_display = False # noqa:F841
         allowed_keys = {"username": "string",
                         "is_vpn": bool,
                         "registered_date": datetime,
@@ -59,7 +59,7 @@ class Client(db.Model):
             if key not in allowed_keys:
                 continue
 
-            if (allowed_keys[key] is "string" or
+            if (allowed_keys[key] == "string" or
                 (isinstance(kwargs[key], allowed_keys[key]))):
                 setattr(self, key, kwargs[key])
 
