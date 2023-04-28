@@ -20,24 +20,28 @@ Change the password for the user postgres since Centinel-server connects to PSQL
     $ sudo -u postgres psql
     $ postgres=> alter user postgres password 'postgres';
 
-### Install psycopg2
+### Install dependencies
 
-	$ sudo apt-get install libpq-dev python-dev
-	$ pip install -U psycopg2
-	
-### Install GeoIP
-First install library libgeoip-dev
+All the dependencies have been provided in a requirements.txt file. It is highly recommended that these be installed
+in a virtual environment. This can be done by installing the `virtualenv` package for your operating system. Once 
+that is installed, the following commands can be run to create the dependencies and install the packages:
 
-	$ sudo apt-get install libgeoip-dev
-	$ pip install GeoIP
-	
+```sh
+python3 -m venv venv
+. ./venv/bin/activate
+```
 
-It is recommended that you run Python version > 2.7.9 and Werkzeug version >= 0.10.0 for better TLS support.
+Once the second command above has been run, there should now be a `(venv)` at the beginning of your prompt. This shows
+that the virtual environment has been successfully installed. 
 
-#### Debian & OS X
+Installing the dependencies can then be done by running the following command: 
 
-    $ pip install flask flask-httpauth flask-sqlalchemy passlib geoip2 netaddr postgres
-    $ python run.py
+```sh
+(venv)$ pip install -r requirements.txt
+```
+
+**Note:** For the rest of this document, if commands that need to be run _outside_ of the virtualenv will be prefaced with `$` 
+and commands that do need the virtualenv will be prefaced with `(venv)$`.
 
 ### Supported platforms
     * Unix
@@ -48,9 +52,10 @@ change production = False in config.py so that  the app will try to connect to l
 
 pass the --adhoc option to python run.py so that the application will not try to load ssl certificate.
 
-	$ python run.py --adhoc
+    $ . ./venv/bin/activate
+	(venv)$ python run.py --adhoc
 
-### Running with Apache (WSGI) for production environments
+### **OUTDATED - Will be updated in time** Running with Apache (WSGI) for production environments 
 Install mod_wsgi and apache
 
 	$ sudo apt-get install apache2 libapache2-mod-wsgi
