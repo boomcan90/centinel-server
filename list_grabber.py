@@ -49,7 +49,7 @@ def parse_args():
     args = parser.parse_args()
 
     if not os.path.exists(args.output):
-        parser.error("The output directory \"%s\" does not exist!" % args.output)
+        parser.error(f"The output directory \"{args.output}\" does not exist!")
 
     if args.user is None and args.digest is False:
         parser.error('Digest authentication has been enabled but no username and password '
@@ -72,22 +72,22 @@ if __name__ == "__main__":
 
     directory = os.path.join(args.output, "global")
     req = requests.get(url, auth=auth)
-    print "Downloading list index."
+    print("Downloading list index.")
     req.raise_for_status()
     csvs = re.findall('href=\"([^\'\.\"]+\.csv)\"', req.text)
 
     if not os.path.exists(directory):
-        print "Creating \"global\" directory at %s." % directory
+        print(f"Creating \"global\" directory at {directory}")
         os.makedirs(directory)
 
     for csvfile in csvs:
         path = urljoin(url, csvfile)
-        print "Downloading  list \"%s\"." % path
+        print(f"Downloading  list {path}")
         try:
             req = requests.get(path, auth=auth)
             req.raise_for_status()
         except Exception as exp:
-            print "Error downloading file \"%s\": %s" % (path, exp)
+            print(f"Error downloading file {path}: {exp}")
             continue
 
         path = os.path.join(args.output, "global", csvfile)
@@ -97,7 +97,7 @@ if __name__ == "__main__":
         if len(base) == 2:
             directory = os.path.join(args.output, base)
             if not os.path.exists(directory):
-                print "Creating directory for country %s at %s." % (base, directory)
+                print(f"Creating directory for country {base} at {directory}")
                 os.makedirs(directory)
             path = os.path.join(directory, "country_list.csv")
 
