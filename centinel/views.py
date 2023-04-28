@@ -15,7 +15,7 @@ import random
 import re
 import requests
 import string
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 
 
 # local imports
@@ -26,6 +26,8 @@ import centinel
 app = centinel.app
 db = centinel.db
 auth = centinel.auth
+
+STATIC_DIR = os.path.join(config.centinel_home, 'static')
 
 try:
     reader = geoip2.database.Reader(config.geoip_db)
@@ -40,7 +42,7 @@ try:
     logging.info("Loading AS info database...")
     as_lookup = GeoIP.open(config.asn_db, GeoIP.GEOIP_STANDARD)
     logging.info("Done loading AS info database.")
-except Exception as exp:
+except Exception: # TODO: look into making this more precise
     logging.warning(("Error loading ASN lookup information. You need a copy "
                      "of each ASN database file to enable this feature."))
     as_lookup = None
@@ -212,7 +214,7 @@ def get_results():
         with open(path) as result_file:
             try:
                 results[file_name] = json.load(result_file)
-            except Exception, e:
+            except Exception as e:
                 logging.error("Results: Couldn't open results file - %s - %s"
                               % (path, str(e)))
 
@@ -568,8 +570,9 @@ def display_consent_page(username, path, freedom_url=''):
 @app.route("/static/<filename>")
 def static_resource(filename):
     file_path = os.path.join(config.centinel_home, 'static', filename)
-    if os.path.isfile(os.path.join(file_path)) and (filename in config.static_files_allowed):
-        return flask.send_from_directory(os.path.join(config.centinel_home, 'static'), filename)
+    if os.path.isfile(os.path.join(file_path)) and \
+        (filename in config.static_files_allowed):
+        return flask.send_from_directory(STATIC_DIR, filename)
     else:
         flask.abort(404)
 
@@ -585,9 +588,9 @@ def get_initial_informed_consent_with_handle(typeable_handle):
     username = client.username
 
     if config.prefetch_freedomhouse:
-        page_path = os.path.join(config.centinel_home,'static','initial_informed_consent.html')
+        page_path = os.path.join(STATIC_DIR,'initial_informed_consent.html')
     else:
-        page_path = os.path.join(config.centinel_home,'static','no_prefetch_informed_consent.html')
+        page_path = os.path.join(STATIC_DIR,'no_prefetch_informed_consent.html')
 
     return display_consent_page(username,
                                 page_path)
@@ -605,7 +608,7 @@ def get_initial_informed_consent():
     if client.has_given_consent:
         return "Consent already given."
     return display_consent_page(username,
-                                os.path.join(config.centinel_home,'static','initial_informed_consent.html'))
+                                os.path.join(STATIC_DIR,'initial_informed_consent.html'))
 
 
 @app.route("/get_informed_consent_for_country")
@@ -632,7 +635,7 @@ def get_country_specific_consent():
     get_page_and_strip_bad_content(constants.freedom_house_url(country),
                                    filename)
 
-    page_path = os.path.join(centinel_home,'static','informed_consent.html')
+    page_path = os.path.join(STATIC_DIR,'informed_consent.html')
     page_content = display_consent_page(username, page_path, freedom_url)
 
     flask.url_for('static', filename=freedom_url)
