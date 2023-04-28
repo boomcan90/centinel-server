@@ -2,11 +2,11 @@ import flask
 from flask import Flask
 from flask_testing import TestCase
 
-from server import app, db, Client
+from centinel import app, db
+from centinel.models import Client
 import config
 #for tests
 import os
-from cStringIO import StringIO
 import unittest
 import uuid
 import base64
@@ -37,8 +37,9 @@ class MyTest(TestCase):
         return self.client.open(url,
             method=method,
             headers={
-                'Authorization': 'Basic ' + base64.b64encode(username + \
-                ":" + password)
+                'Authorization': 'Basic ' + \
+                base64.b64encode(username.encode('utf-8') + \
+                b":" + password.encode('utf-8')).decode('utf-8')
             }
         )
     def check_broken_auth(self, url):
@@ -63,12 +64,12 @@ class MyTest(TestCase):
 
     def test_results_POST(self):
         url = '/results'
-        with open('testfile','wb') as test_file:
+        with open('testfile','w') as test_file:
             test_file.write('Hello Centinels')
-        with open('testfile','r') as test_file:
+        with open('testfile','rb') as test_file:
             headers={
-                'Authorization': 'Basic ' + base64.b64encode(self.testUsername + \
-                ":" + self.testPassword)
+                'Authorization': 'Basic ' + base64.b64encode(self.testUsername.encode('utf-8') + \
+                b":" + self.testPassword.encode('utf-8')).decode('utf-8')
             }
             files = {'result' : test_file}
             response = self.client.post(url, data=files, headers=headers)
